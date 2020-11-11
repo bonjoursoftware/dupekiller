@@ -1,30 +1,35 @@
 PYTHON_VERSION = 3.8.6
-DOCKER_TEST_TAG = bonjoursoftware/dupekiller:test
-DOCKER_BUILD_TAG = bonjoursoftware/dupekiller:latest
 
-.PHONY: build-test
-build-test:
+DOCKER_PIPENV_TAG = bonjoursoftware/dupekiller:pipenv
+DOCKER_PIPENV_RUN = docker run --rm $(DOCKER_PIPENV_TAG)
+
+DOCKER_TAG = bonjoursoftware/dupekiller:latest
+DOCKER_RUN = docker run --rm $(DOCKER_TAG)
+
+.PHONY: pipenv-build
+pipenv-build:
 	@docker build \
-		--file ./tests/Dockerfile . \
+		--file ./Dockerfile . \
 		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
-		--tag $(DOCKER_TEST_TAG) \
+		--tag $(DOCKER_PIPENV_TAG) \
 		> /dev/null
 
-.PHONY: test
-test: build-test
-	@docker run \
-		--rm \
-		$(DOCKER_TEST_TAG)
+.PHONY: pipenv-test
+pipenv-test: pipenv-build
+	@$(DOCKER_PIPENV_RUN) pytest
+
+.PHONY: pipenv-fmt
+pipenv-fmt: pipenv-build
+	@$(DOCKER_PIPENV_RUN) black .
 
 .PHONY: build
-build: test
+build: pipenv-test
 	@docker build \
+		--file ./dupekiller/Dockerfile . \
 		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
-		--tag $(DOCKER_BUILD_TAG) . \
+		--tag $(DOCKER_TAG) \
 		> /dev/null
 
 .PHONY: run
 run: build
-	@docker run \
-		--rm \
-		$(DOCKER_BUILD_TAG)
+	@$(DOCKER_RUN)

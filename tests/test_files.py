@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from dupekiller import files
+from dupekiller import finder
 
 TMP_FILES_NUM = 2
 
@@ -18,4 +18,4 @@ def tmp_files(tmp_path):
 
 def test_walk(tmp_files) -> None:
     print(tmp_files)
-    assert len(files.walk(str(tmp_files))) == TMP_FILES_NUM
+    assert len(finder.walk(str(tmp_files))) == TMP_FILES_NUM

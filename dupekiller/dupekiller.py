@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 from os import getcwd
 
-from dupekiller import files
+import finder
 
 
 def main() -> None:
-    print(files.walk(getcwd()))
+    print(finder.walk(getcwd()))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

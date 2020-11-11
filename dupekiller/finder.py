@@ -15,4 +15,8 @@ class File:
 
 
 def walk(path: str) -> List[File]:
-    return [File(file, parent) for parent, directories, files in os.walk(path) for file in files]
+    return [
+        File(file, parent)
+        for parent, directories, files in os.walk(path)
+        for file in files
+    ]
